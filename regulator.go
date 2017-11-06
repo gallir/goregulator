@@ -50,6 +50,11 @@ func (r *Regulator) run(opsPerSecond int) {
 			go r.copier(elems, interval)
 		case <-r.stop:
 			ticker.Stop()
+			// Clean any pending ticker message
+			select {
+			case <-ticker.C:
+			default:
+			}
 			return
 		}
 	}
